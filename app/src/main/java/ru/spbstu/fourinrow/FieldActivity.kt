@@ -1,11 +1,14 @@
 package ru.spbstu.fourinrow
 
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import org.jetbrains.anko.*
 import ru.spbstu.fourinrow.core.FourInRow
+import ru.spbstu.fourinrow.core.FourInRow.Chip.RED
+import ru.spbstu.fourinrow.core.FourInRow.Chip.YELLOW
 import java.util.*
 
 class FieldActivity : AppCompatActivity() {
@@ -26,13 +29,6 @@ class FieldActivity : AppCompatActivity() {
 
 class FieldActivityUi : AnkoComponent<FieldActivity> {
 
-    private val customStyle = { v: Any ->
-        when (v) {
-            is Button -> {
-                v.maxWidth = 2
-            }
-        }
-    }
     private val field = FourInRow()
 
     private var over = false
@@ -47,10 +43,10 @@ class FieldActivityUi : AnkoComponent<FieldActivity> {
         for ((cell, button) in buttons) {
             val chip = field[cell]
             button.backgroundColor = when (chip) {
-                FourInRow.Chip.YELLOW -> 0xffffff00L
-                FourInRow.Chip.RED -> 0xffff0000L
-                null -> 0xff808080L
-            }.toInt()
+                YELLOW -> Color.YELLOW
+                RED -> Color.RED
+                null -> Color.GRAY
+            }
         }
         val winner = field.winner()
         if (winner != null) {
@@ -68,7 +64,7 @@ class FieldActivityUi : AnkoComponent<FieldActivity> {
 
     override fun createView(ui: AnkoContext<FieldActivity>) = with(ui) {
         verticalLayout {
-            message = textView("Make your turn, yellow")
+            message = textView()
             gridLayout {
                 columnCount = field.width
                 rowCount = field.height
@@ -80,18 +76,19 @@ class FieldActivityUi : AnkoComponent<FieldActivity> {
                             onClick {
                                 if (!over) {
                                     field.makeTurn(column)
-                                }
-                                else {
+                                } else {
                                     field.clear()
                                 }
                                 refresh()
                             }
+                            lparams {
+                                width = dip(40)
+                            }
                         }
-                        b.maxWidth = 2
                         buttons[FourInRow.Cell(column, field.height - row - 1)] = b
                     }
                 }
-            }.style(customStyle)
+            }
         }
     }
 }
