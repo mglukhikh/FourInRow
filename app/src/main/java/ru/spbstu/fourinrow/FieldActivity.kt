@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import org.jetbrains.anko.*
 import ru.spbstu.fourinrow.core.FourInRow
@@ -65,27 +66,33 @@ class FieldActivityUi : AnkoComponent<FieldActivity> {
     override fun createView(ui: AnkoContext<FieldActivity>) = with(ui) {
         verticalLayout {
             message = textView()
-            gridLayout {
-                columnCount = field.width
-                rowCount = field.height
-                useDefaultMargins = true
-
-                for (row in 0..rowCount - 1) {
-                    for (column in 0..columnCount - 1) {
-                        val b = button {
-                            onClick {
-                                if (!over) {
-                                    field.makeTurn(column)
-                                } else {
-                                    field.clear()
+            linearLayout {
+                orientation = LinearLayout.VERTICAL
+                weightSum = 1.0f
+                for (row in 0..field.height - 1) {
+                    linearLayout {
+                        orientation = LinearLayout.HORIZONTAL
+                        weightSum = 1.0f
+                        for (column in 0..field.width - 1) {
+                            val b = button {
+                                onClick {
+                                    if (!over) {
+                                        field.makeTurn(column)
+                                    } else {
+                                        field.clear()
+                                    }
+                                    refresh()
                                 }
-                                refresh()
+                                lparams {
+                                    bottomMargin = dip(1)
+                                    topMargin = dip(1)
+                                    leftMargin = dip(1)
+                                    rightMargin = dip(1)
+                                    weight = 1.0f / field.width
+                                }
                             }
-                            lparams {
-                                width = dip(40)
-                            }
+                            buttons[FourInRow.Cell(column, field.height - row - 1)] = b
                         }
-                        buttons[FourInRow.Cell(column, field.height - row - 1)] = b
                     }
                 }
             }
