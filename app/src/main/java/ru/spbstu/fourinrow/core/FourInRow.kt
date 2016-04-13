@@ -19,7 +19,7 @@ class FourInRow(val width: Int = 7, val height: Int = 6, private val winLength: 
     private val chips = HashMap<Cell, Chip>()
 
     var turn = Chip.YELLOW
-        private set
+        internal set
 
     fun clear() {
         chips.clear()
@@ -29,6 +29,15 @@ class FourInRow(val width: Int = 7, val height: Int = 6, private val winLength: 
     operator fun get(x: Int, y: Int) = get(Cell(x, y))
 
     operator fun get(cell: Cell) = chips[cell]
+
+    internal operator fun set(x: Int, y: Int, chip: Chip?) {
+        if (chip != null) {
+            chips.put(Cell(x, y), chip)
+        }
+        else {
+            chips.remove(Cell(x, y))
+        }
+    }
 
     fun makeTurn(x: Int): Cell? {
         if (x < 0 || x >= width) return null

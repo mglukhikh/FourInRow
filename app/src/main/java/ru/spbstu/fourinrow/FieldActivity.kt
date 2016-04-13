@@ -26,11 +26,49 @@ class FieldActivity : AppCompatActivity() {
         super.onStart()
         ui.refresh()
     }
+
+    override fun onResume() {
+        super.onResume()
+        ui.refresh()
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        val field = ui.field
+        for (row in 0..field.height - 1) {
+            for (column in 0..field.width - 1) {
+                val chip = field[column, row]
+                val key = 10 * (row + 1) + (column + 1)
+                savedInstanceState.putInt(key.toString(), chip?.ordinal ?: -1)
+            }
+        }
+        savedInstanceState.putInt("Turn", field.turn.ordinal)
+
+        super.onSaveInstanceState(savedInstanceState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        val field = ui.field
+        val turn = savedInstanceState.getInt("Turn")
+        field.turn = if (turn == 0) YELLOW else RED
+        for (row in 0..field.height - 1) {
+            for (column in 0..field.width - 1) {
+                val key = 10 * (row + 1) + (column + 1)
+                val savedChip = savedInstanceState.getInt(key.toString())
+                field[column, row] = when (savedChip) {
+                    0 -> YELLOW
+                    1 -> RED
+                    else -> null
+                }
+            }
+        }
+
+        super.onRestoreInstanceState(savedInstanceState)
+    }
 }
 
 class FieldActivityUi : AnkoComponent<FieldActivity> {
 
-    private val field = FourInRow()
+    internal val field = FourInRow()
 
     private var over = false
 
