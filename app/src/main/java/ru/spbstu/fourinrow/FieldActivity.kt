@@ -131,6 +131,9 @@ class FieldActivityUi : AnkoComponent<FieldActivity> {
                             }
                             buttons[FourInRow.Cell(column, field.height - row - 1)] = b
                         }
+                        lparams {
+                            weight = 1.0f / field.height
+                        }
                     }
                 }
             }
