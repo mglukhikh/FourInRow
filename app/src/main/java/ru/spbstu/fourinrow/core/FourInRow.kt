@@ -2,7 +2,7 @@ package ru.spbstu.fourinrow.core
 
 import java.util.*
 
-class FourInRow(val width: Int = 7, val height: Int = 6, private val winLength: Int = 4) {
+class FourInRow(val width: Int = 7, val height: Int = 6, val winLength: Int = 4) {
 
     enum class Chip {
         YELLOW,
@@ -14,6 +14,8 @@ class FourInRow(val width: Int = 7, val height: Int = 6, private val winLength: 
     data class Cell(internal val x: Int, internal val y: Int) {
 
         operator fun plus(arg: Cell) = Cell(x + arg.x, y + arg.y)
+
+        operator fun times(arg: Int) = Cell(x * arg, y * arg)
     }
 
     private val chips = HashMap<Cell, Chip>()
@@ -77,7 +79,7 @@ class FourInRow(val width: Int = 7, val height: Int = 6, private val winLength: 
 
     private val directions = arrayOf(Cell(0, 1), Cell(1, 0), Cell(1, 1), Cell(1, -1))
 
-    private fun correct(cell: Cell) = cell.x >= 0 && cell.x < width && cell.y >= 0 && cell.y < height
+    fun correct(cell: Cell) = cell.x >= 0 && cell.x < width && cell.y >= 0 && cell.y < height
 
     fun winner(): Chip? {
         for (x in 0..width - 1) {

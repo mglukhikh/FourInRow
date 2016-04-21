@@ -100,6 +100,7 @@ class FieldActivityUi : AnkoComponent<FieldActivity> {
             message.text = "Draw!"
         }
         else {
+            over = false
             message.text = "Make your turn, ${field.turn.text()}"
         }
     }
@@ -120,7 +121,7 @@ class FieldActivityUi : AnkoComponent<FieldActivity> {
                                     if (!over) {
                                         if (field.makeTurn(column) != null && opponent != null) {
                                             refresh()
-                                            val turn = opponent.bestTurn(depth = 4).turn
+                                            val turn = opponent.bestTurn(depth = 2).turn
                                             if (turn != null) {
                                                 field.makeTurn(turn)
                                             }
