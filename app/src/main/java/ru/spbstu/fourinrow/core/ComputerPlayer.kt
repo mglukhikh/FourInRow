@@ -7,23 +7,20 @@ class ComputerPlayer(private val field: FourInRow) {
 
     private val random = Random(Calendar.getInstance().timeInMillis)
 
-    private fun evaluation(side: FourInRow.Chip = YELLOW, depth: Int = 0): Int {
-        if (side == RED) return -evaluation(depth = depth)
-        when (field.winner()) {
-            YELLOW -> return 10000 + depth
-            RED    -> return -10000 - depth
-            null   -> {}
-        }
-        if (!field.hasFreeCells()) return 0
+    private fun evaluation(side: FourInRow.Chip = YELLOW): Int {
         return random.nextInt(5) - 2
     }
 
     data class EvaluatedTurn(val turn: Int?, val evaluation: Int)
 
     fun bestTurn(depth: Int, lowerBound: Int = -1000000, upperBound: Int = 1000000): EvaluatedTurn {
-        if (depth <= 0 || field.winner() != null || !field.hasFreeCells()) {
-            return EvaluatedTurn(null, evaluation(field.turn, depth))
+        when (field.winner()) {
+            field.turn -> return EvaluatedTurn(null, 10000 + depth)
+            field.turn.opposite() -> return EvaluatedTurn(null, -10000 - depth)
+            else -> {}
         }
+        if (!field.hasFreeCells()) return EvaluatedTurn(null, 0)
+        if (depth <= 0) return EvaluatedTurn(null, evaluation(field.turn))
         var lower = lowerBound
         var result = EvaluatedTurn(null, lower)
         for (turn in 0..field.width - 1) {

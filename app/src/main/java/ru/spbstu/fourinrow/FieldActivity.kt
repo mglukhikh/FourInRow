@@ -119,9 +119,9 @@ class FieldActivityUi : AnkoComponent<FieldActivity> {
                                 onClick {
                                     if (!over) {
                                         if (field.makeTurn(column) != null && opponent != null) {
-                                            val turn = opponent.bestTurn(depth = 5).turn
+                                            refresh()
+                                            val turn = opponent.bestTurn(depth = 4).turn
                                             if (turn != null) {
-                                                refresh()
                                                 field.makeTurn(turn)
                                             }
                                         }
