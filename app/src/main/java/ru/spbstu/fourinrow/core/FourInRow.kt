@@ -52,6 +52,20 @@ class FourInRow(val width: Int = 7, val height: Int = 6, private val winLength: 
         return null
     }
 
+    fun takeTurnBack(x: Int): Cell? {
+        if (x < 0 || x >= width) return null
+        for (y in 0..height) {
+            if (y == height || this[x, y] == null) {
+                if (y == 0) return null
+                val cell = Cell(x, y - 1)
+                chips.remove(cell)
+                turn = turn.opposite()
+                return cell
+            }
+        }
+        return null
+    }
+
     fun hasFreeCells(): Boolean {
         for (x in 0..width - 1) {
             for (y in 0..height - 1) {

@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import org.jetbrains.anko.*
+import ru.spbstu.fourinrow.core.ComputerPlayer
 import ru.spbstu.fourinrow.core.FourInRow
 import ru.spbstu.fourinrow.core.FourInRow.Chip.RED
 import ru.spbstu.fourinrow.core.FourInRow.Chip.YELLOW
@@ -70,6 +71,8 @@ class FieldActivityUi : AnkoComponent<FieldActivity> {
 
     internal val field = FourInRow()
 
+    private val opponent: ComputerPlayer? = ComputerPlayer(field)
+
     private var over = false
 
     private lateinit var message: TextView
@@ -115,7 +118,13 @@ class FieldActivityUi : AnkoComponent<FieldActivity> {
                             val b = button {
                                 onClick {
                                     if (!over) {
-                                        field.makeTurn(column)
+                                        if (field.makeTurn(column) != null && opponent != null) {
+                                            val turn = opponent.bestTurn(depth = 5).turn
+                                            if (turn != null) {
+                                                refresh()
+                                                field.makeTurn(turn)
+                                            }
+                                        }
                                     } else {
                                         field.clear()
                                     }
